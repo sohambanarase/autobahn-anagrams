@@ -13,6 +13,8 @@ Road-trip word game. Unscramble German license plates from your window seat, sol
 | `api/keepalive.js` | Daily ping so the free Supabase project never pauses |
 | `vercel.json` | Tells Vercel to run the keep-alive once a day |
 | `supabase-setup.sql` | Run once in Supabase to create the tiny keep-alive table |
+| `favicon.ico`, `icons/` | Browser tab icon, phone home-screen icons, logo, link-preview image |
+| `manifest.webmanifest`, `sw.js` | Make the game installable as an app on phones |
 
 `_head.html` and `build.py` are only needed if you change the layout (`python3 build.py` rebuilds `index.html`).
 
@@ -40,7 +42,13 @@ Open `config.js` in a plain text editor (VS Code, Notepad, or TextEdit in plain-
 - Vercel project → **Settings → Cron Jobs** → you should see `/api/keepalive` daily.
 - Open the game on laptop + phone → **Road Trip** → lobby says **Online**.
 
+## Install as an app
+- **iPhone (Safari):** Share button → **Add to Home Screen**.
+- **Android (Chrome):** menu ⋮ → **Install app** (or **Add to Home screen**).
+It opens full screen with the Autobahn Anagrams icon.
+
 ## Troubleshooting
+- Old icon still showing: phones cache icons. Delete the home-screen icon and add it again.
 - `/api/keepalive` shows **401 or 404**: the SQL step didn't run, or the key in config.js is wrong.
 - Lobby says **Test mode**: config.js keys are empty or didn't save.
 - Lobby says **Connection problem**: Supabase → **Realtime → Settings** → allow public channels.

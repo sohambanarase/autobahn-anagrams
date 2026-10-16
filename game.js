@@ -1227,6 +1227,7 @@ if(G.muted)$('sndWave').style.display='none';
 resize();resetWorld();updateActions();updateHUD();
 // an invite link (#CODE) opens the Road Trip screen straight away
 if(/^#[A-Za-z]{4}$/.test(location.hash||''))openNet();
+try{if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude/.test(location.hostname))navigator.serviceWorker.register('/sw.js').catch(()=>{})}catch(e){}
 requestAnimationFrame(frame);
 window.__AA={G,NET,setView:v=>{VIEW=v;resetWorld()}};
 })();

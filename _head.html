@@ -1,5 +1,21 @@
 <title>Autobahn Anagrams</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<!--ICONS-->
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Autobahn">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="Autobahn Anagrams">
+<meta property="og:description" content="Unscramble German license plates on a road trip. Solo or with friends.">
+<meta property="og:image" content="/icons/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<!--/ICONS-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap">
@@ -143,6 +159,7 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
 .sign .shield{display:inline-block;background:#fff;color:var(--sign);font-family:var(--f-disp);font-weight:800;font-size:15px;padding:1px 8px;border-radius:4px 4px 10px 10px;letter-spacing:.04em}
 .sign h1{margin:8px 0 2px;font-family:var(--f-disp);font-weight:800;font-size:clamp(40px,11vw,56px);line-height:.92;letter-spacing:.01em;text-wrap:balance}
 .sign p{margin:6px 0 0;font-size:14px;line-height:1.45;opacity:.92}
+.sign h1.logo{margin:12px 0 6px;line-height:0}.sign h1.logo img{display:block;width:100%;height:auto}
 .sign .arrows{display:flex;justify-content:space-between;margin-top:10px;font-family:var(--f-disp);font-weight:600;font-size:15px;opacity:.95}
 .modes{display:grid;gap:10px}
 .mode{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;border-radius:14px;background:var(--panel2);border:1px solid var(--line)}
@@ -313,7 +330,7 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
     <div class="card">
       <div class="sign">
         <span class="shield">A9</span>
-        <h1>Autobahn Anagrams</h1>
+        <h1 class="logo"><img src="icons/logo-wordmark.png" alt="Autobahn Anagrams" width="666" height="307"></h1>
         <p>You ride shotgun from München to Berlin. Lukas drives, Mia heckles from the back. Every car you catch carries a plate. Turn its letters into a word before it pulls away.</p>
         <div class="arrows"><span>↑ Berlin 1000 km</span><span>Ausfahrt Spaß ↗</span></div>
       </div>

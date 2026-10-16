@@ -13,6 +13,10 @@ deploy=('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
  '<script src="words.js"></script>\n<script src="game.js"></script>\n</body>\n</html>\n')
 open('index.html','w').write(deploy)
 os.makedirs('dist',exist_ok=True)
+import re,base64
+wm='data:image/png;base64,'+base64.b64encode(open('icons/logo-wordmark.png','rb').read()).decode()
+head=re.sub(r'<!--ICONS-->.*?<!--/ICONS-->','',head,flags=re.S)
+body=body.replace('icons/logo-wordmark.png',wm)
 single=head+body+'<script>\n'+open('config.js').read()+'\n</script>\n<script>\n'+open('words.js').read()+'\n</script>\n<script>\n'+open('game.js').read()+'\n</script>\n'
 open('dist/autobahn-anagrams-single.html','w').write(single)
 print(len(deploy),len(single))
