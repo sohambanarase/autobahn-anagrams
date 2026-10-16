@@ -67,7 +67,7 @@ G.len=store.get('len','normal');G.pace=1;G.lockUntil=0;G.turboUntil=0;G.misses=0
 const PACE={quick:2.6,normal:1};
 const BOOST_CD=25000,PRANK_IMMUNE=20000; // ms between your boosts; a pranked car is safe for 20 s
 const ITEMS={
-  oil:{icon:'🛢️',name:'Oil slick',cost:800,max:1,rival:1,desc:'Spin out the leader. Letters lock 4 s.'},
+  oil:{icon:'🛢️',name:'Oil slick',cost:800,max:3,rival:1,desc:'Spin out the leader. Letters lock 4 s.'},
   fog:{icon:'🌫️',name:'Fog bomb',cost:600,max:2,rival:1,desc:'Blur the leader\'s letters 7 s.'},
   turbo:{icon:'🚀',name:'Turbo',cost:700,max:2,desc:'60% faster for 10 s.'},
   fuel:{icon:'⛽',name:'Refuel',cost:500,max:1,desc:'+40 fuel in the tank.'},

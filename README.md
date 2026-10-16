@@ -54,7 +54,7 @@ Spend your points with the round **Boost** button:
 
 | Boost | Cost | Per trip | What it does |
 |---|---|---|---|
-| 🛢️ Oil slick | 800 | 1× | The leading rival spins out. Their letters lock for 4 seconds. *(Rally)* |
+| 🛢️ Oil slick | 800 | 3× | The leading rival spins out. Their letters lock for 4 seconds. *(Rally)* |
 | 🌫️ Fog bomb | 600 | 2× | The leading rival's letters go blurry for 7 seconds. *(Rally)* |
 | 🚀 Turbo | 700 | 2× | Your car goes 60% faster for 10 seconds. |
 | ⛽ Refuel | 500 | 1× | +40 fuel. |
