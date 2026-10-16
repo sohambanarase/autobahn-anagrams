@@ -939,7 +939,7 @@ function autoSeat(pid){
   for(const c of cars){const s=SEAT_ORDER.find(k=>!c.seats[k]);if(s){c.seats[s]=pid;return}}
   if(NET.lobby.mode==='rally'&&NET.lobby.cars.length<4){const id=TEAM_ORDER.find(t=>!carOf(t));const c=newCar(id);c.seats.front=pid;NET.lobby.cars.push(c)}
 }
-function alive(pid){if(pid===NET.id)return true;const p=NET.players[pid];return p&&Date.now()-p.last<12000}
+function alive(pid){if(pid===NET.id)return true;const p=NET.players[pid];return p&&Date.now()-p.last<45000}
 function namesMap(){const n={};for(const id in NET.players)n[id]=NET.players[id].name;n[NET.id]=NET.name;return n}
 function sendLobby(){if(!amHost())return;NET.lobby.names=namesMap();NET.lastLobbySent=Date.now();netSend({t:'lobby',lobby:NET.lobby});renderLobby()}
 function pruneLobby(){
@@ -970,7 +970,7 @@ function leaveTrip(){
 function hello(){netSend({t:'hello',name:NET.name,joinedAt:NET.joinedAt})}
 function heartbeat(){
   if(!NET.on)return;NET.players[NET.id].last=Date.now();hello();
-  for(const id in NET.players)if(id!==NET.id&&Date.now()-NET.players[id].last>30000)delete NET.players[id];
+  for(const id in NET.players)if(id!==NET.id&&Date.now()-NET.players[id].last>120000)delete NET.players[id];
   // host gone? the earliest remaining rider takes over
   if(NET.lobby&&!alive(NET.lobby.hostId)){
     const ids=Object.keys(NET.players).filter(alive).sort((a,b)=>(NET.players[a].joinedAt-NET.players[b].joinedAt)||(a<b?-1:1));
@@ -1280,7 +1280,7 @@ function renderLobby(){
     $('lbCars').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>removeCar(b.dataset.rm))}
   const riders=Object.keys(names).filter(id=>seatOf(id)&&alive(id)).length;
   $('btnStartTrip').hidden=!host;$('btnStartTrip').disabled=!host;
-  const conn=NET.status==='online'?'Online.':NET.status==='local'?'<b>Test mode:</b> no online keys set, so only other tabs in this browser can join. Open this page in a second tab with the same code to try it.':NET.status==='error'?'Connection problem. Check your internet.':'Connecting…';
+  const conn=NET.status==='online'?'Online.':NET.status==='local'?'<b style="color:var(--bad)">Test mode: online keys missing in config.js.</b> Friends on other phones can\'t join, only other tabs in this browser.':NET.status==='error'?'Connection problem. Check your internet.':'Connecting…';
   const hostName=names[L.hostId]||'the host';
   note.innerHTML=`${conn} ${riders} rider${riders===1?'':'s'} in. ${host?(L.mode==='rally'&&L.cars.length<2?'Add a second car to race.':'Start when everyone is seated.'):`Waiting for ${esc(hostName)} to start.`}`;
 }
@@ -1288,7 +1288,9 @@ function openNet(){
   hideOverlays();$('ovNet').hidden=false;$('netJoin').hidden=false;$('netLobby').hidden=true;G.mode='lobby';
   $('inName').value=store.get('name','');
   const h=(location.hash||'').replace('#','').toUpperCase();if(/^[A-Z]{4}$/.test(h))$('inCode').value=h;
-  $('netNote').innerHTML=(window.AA_CONFIG&&AA_CONFIG.supabaseUrl)?'':'Online keys are not set up yet, so trips only work between tabs in this browser. The README explains the free setup.';
+  const hasKeys=!!(window.AA_CONFIG&&AA_CONFIG.supabaseUrl&&AA_CONFIG.supabaseAnonKey);
+  $('netNote').className='netnote'+(hasKeys?'':' warn');
+  $('netNote').innerHTML=hasKeys?'':'<b>Online play is off on this site.</b> config.js has no Supabase keys, so friends on other phones can\'t join. Only other tabs in this browser can. See README, step 2.';
 }
 function readName(){const n=$('inName').value.trim().slice(0,12);if(!n){$('inName').focus();$('netNote').textContent='Add your name so your team knows who found what.';return null}store.set('name',n);NET.name=n;return n}
 
@@ -1351,7 +1353,7 @@ function bind(){
     if(k==='1'){shuffleTiles();return}
     if(/^[a-zA-Z]$/.test(k))typeLetter(k.toUpperCase());
   });
-  document.addEventListener('visibilitychange',()=>{if(document.hidden&&G.mode==='play'&&!G.mp)pause(true)});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&G.mode==='play'&&!G.mp)pause(true);if(!document.hidden&&NET.on){NET.players[NET.id].last=Date.now();hello();if(amHost())sendLobby()}});
   new ResizeObserver(resize).observe($('shield'));
 }
 
