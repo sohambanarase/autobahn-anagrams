@@ -55,12 +55,12 @@ Spend your points with the round **Boost** button:
 | Boost | Cost | Per trip | What it does |
 |---|---|---|---|
 | 🛢️ Oil slick | 800 | 3× | The leading rival spins out. Their letters lock for 4 seconds. *(Rally)* |
-| 🌫️ Fog bomb | 600 | 2× | The leading rival's letters go blurry for 7 seconds. *(Rally)* |
+| 🌫️ Fog bomb | 600 | 3× | The leading rival's letters go blurry for 7 seconds. *(Rally)* |
 | 🚀 Turbo | 700 | 2× | Your car goes 60% faster for 10 seconds. |
-| ⛽ Refuel | 500 | 1× | +40 fuel. |
-| 🛡️ Shield | 400 | 1× | Blocks the next prank aimed at you. *(Rally)* |
+| ⛽ Refuel | 500 | 3× | +40 fuel. |
+| 🛡️ Shield | 400 | 3× | Blocks the next prank aimed at you. *(Rally)* |
 
-Each car waits 25 seconds between boosts, and a car that just got pranked is safe for 20 seconds.
+Limits are per car, shared by everyone in it. Each car waits 25 seconds between boosts, and a car that just got pranked is safe for 20 seconds.
 
 Everyone sees a big banner saying who did what: **"DISHA OILED TEAM BLAU"**.
 
