@@ -65,12 +65,13 @@ const G={
 let VIEW=G.seat;
 G.len=store.get('len','normal');G.pace=1;G.lockUntil=0;G.turboUntil=0;G.misses=0;
 const PACE={quick:2.6,normal:1};
+const BOOST_CD=25000,PRANK_IMMUNE=20000; // ms between your boosts; a pranked car is safe for 20 s
 const ITEMS={
-  oil:{icon:'🛢️',name:'Oil slick',cost:300,rival:1,desc:'Spin out the leader. Letters lock 4 s.'},
-  fog:{icon:'🌫️',name:'Fog bomb',cost:200,rival:1,desc:'Blur the leader\'s letters 7 s.'},
-  turbo:{icon:'🚀',name:'Turbo',cost:250,desc:'60% faster for 10 s.'},
-  fuel:{icon:'⛽',name:'Refuel',cost:200,desc:'+40 fuel in the tank.'},
-  shield:{icon:'🛡️',name:'Shield',cost:150,desc:'Blocks the next prank.'}
+  oil:{icon:'🛢️',name:'Oil slick',cost:800,max:1,rival:1,desc:'Spin out the leader. Letters lock 4 s.'},
+  fog:{icon:'🌫️',name:'Fog bomb',cost:600,max:2,rival:1,desc:'Blur the leader\'s letters 7 s.'},
+  turbo:{icon:'🚀',name:'Turbo',cost:700,max:2,desc:'60% faster for 10 s.'},
+  fuel:{icon:'⛽',name:'Refuel',cost:500,max:1,desc:'+40 fuel in the tank.'},
+  shield:{icon:'🛡️',name:'Shield',cost:400,max:1,desc:'Blocks the next prank.'}
 };
 
 /* ---------- Audio ---------- */
@@ -238,7 +239,7 @@ function updateChips(){
 
 /* ---------- Game flow ---------- */
 function resetRun(){
-  Object.assign(G,{misses:0,lockUntil:0,turboUntil:0,score:0,streak:0,bestStreak:0,fuel:100,km:0,speed:60,words:0,longest:'',leg:0,phase:'none',usedTargets:new Set(),myScore:0,plate:null,tiles:[],built:[]});
+  Object.assign(G,{uses:{},cdUntil:0,misses:0,lockUntil:0,turboUntil:0,score:0,streak:0,bestStreak:0,fuel:100,km:0,speed:60,words:0,longest:'',leg:0,phase:'none',usedTargets:new Set(),myScore:0,plate:null,tiles:[],built:[]});
   bubbleQ=[];resetWorld();showPlate(null);renderTiles();$('hintline').textContent='';
 }
 function startSolo(){
@@ -1061,12 +1062,14 @@ function applyEv(m){
   else if(m.k==='miss'){T.streak=0;T.fuel=Math.max(0,T.fuel-20);if(T.fuel<=0&&T.status==='driving')T.status='stalled'}
   else if(m.k==='item'){
     const it=ITEMS[m.item];if(!it||T.score<it.cost||T.status!=='driving')return;
-    const now=Date.now();let blocked=false;
-    if(it.rival){const TT=NET.teams[m.target];if(!TT||m.target===m.car||TT.status!=='driving')return;
-      if(TT.shield){TT.shield=0;blocked=true}else if(m.item==='oil')TT.oilUntil=now+5000}
+    const now=Date.now();let blocked=false;T.uses=T.uses||{};
+    if((T.uses[m.item]||0)>=it.max||now<(T.cdUntil||0))return;
+    if(it.rival){const TT=NET.teams[m.target];if(!TT||m.target===m.car||TT.status!=='driving'||now<(TT.immuneUntil||0))return;
+      if(TT.shield){TT.shield=0;blocked=true}else{TT.immuneUntil=now+PRANK_IMMUNE;if(m.item==='oil')TT.oilUntil=now+5000}}
     else if(m.item==='turbo')T.turboUntil=now+10000;
     else if(m.item==='fuel')T.fuel=Math.min(100,T.fuel+40);
     else if(m.item==='shield')T.shield=1;
+    T.uses[m.item]=(T.uses[m.item]||0)+1;T.cdUntil=now+BOOST_CD;
     T.score-=it.cost;ps.spent=(ps.spent||0)+it.cost;ps.pranks=(ps.pranks||0)+(it.rival&&!blocked?1:0);
     const fx={t:'fx',item:m.item,by:m.name,byCar:m.car,target:m.target,blocked};
     netSend(fx);showFx(fx);
@@ -1169,31 +1172,37 @@ function rivalTarget(){
   const ids=Object.keys(T).filter(id=>id!==NET.myCar&&T[id].status==='driving').sort((a,b)=>T[b].km-T[a].km||T[b].score-T[a].score);
   return ids[0]||null;
 }
-function canUse(id){const it=ITEMS[id];if(G.mode!=='play'||G.score<it.cost)return false;if(G.mp&&myTeamOut())return false;if(it.rival&&!rivalTarget())return false;return true}
+function usesLeft(id){const u=G.mp?((myTeam()||{}).uses||{}):G.uses;return ITEMS[id].max-(u[id]||0)}
+function cdLeft(){return Math.max(0,Math.ceil((G.cdUntil-performance.now())/1000))}
+function targetImmune(t){return t&&NET.immune&&performance.now()<(NET.immune[t]||0)}
+function canUse(id){const it=ITEMS[id];if(G.mode!=='play'||G.score<it.cost||usesLeft(id)<=0||cdLeft()>0)return false;if(G.mp&&myTeamOut())return false;if(it.rival){const t=rivalTarget();if(!t||targetImmune(t))return false}return true}
 function updateBoost(){
   const btn=$('btnBoost');const show=G.mode==='play'||G.mode==='pause';if(btn.hidden===show)btn.hidden=!show;if(!show)return;
   const n=itemsAvail().filter(canUse).length;const bd=$('boostBadge');
   if(bd.textContent!==String(n)){bd.textContent=n;bd.hidden=!n}
   btn.classList.toggle('ready',n>0);btn.classList.toggle('dim',n===0);
-  if(!$('boostSheet').hidden&&updateBoost.sig!==G.score+'|'+rivalTarget()){renderBoost()}
+  if(!$('boostSheet').hidden&&updateBoost.sig!==boostSig()){renderBoost()}
 }
+function boostSig(){return G.score+'|'+rivalTarget()+'|'+cdLeft()+'|'+JSON.stringify(G.mp?((myTeam()||{}).uses||{}):G.uses)}
 function renderBoost(){
-  updateBoost.sig=G.score+'|'+rivalTarget();
-  $('walletTxt').textContent=`· ${G.mp?'Team wallet':'Wallet'}: ${G.score.toLocaleString('de-DE')} pts`;
+  updateBoost.sig=boostSig();
+  const cd=cdLeft();$('walletTxt').textContent=`· ${G.mp?'Team wallet':'Wallet'}: ${G.score.toLocaleString('de-DE')} pts${cd?` · next boost in ${cd} s`:''}`;
   const tgt=rivalTarget();
   $('boostGrid').innerHTML=itemsAvail().map((id,i)=>{const it=ITEMS[id];const ok=canUse(id);
-    const extra=it.rival?(tgt?` Hits Team ${TEAMS[tgt].name}.`:' No rival on the road.'):'';
-    return`<button class="item${it.rival?' rival':''}" data-item="${id}" ${ok?'':'disabled'}><span class="ic">${it.icon}</span><b>${it.name} <kbd>${i+2}</kbd></b><small>${it.desc}${extra}</small><em>${it.cost} pts${G.score<it.cost?` · need ${it.cost-G.score} more`:''}</em></button>`}).join('');
+    const left=usesLeft(id);
+    const extra=it.rival?(tgt?(targetImmune(tgt)?` Team ${TEAMS[tgt].name} is still recovering.`:` Hits Team ${TEAMS[tgt].name}.`):' No rival on the road.'):'';
+    const status=left<=0?'Used up this trip':G.score<it.cost?`${it.cost} pts · need ${it.cost-G.score} more`:`${it.cost} pts`;
+    return`<button class="item${it.rival?' rival':''}" data-item="${id}" ${ok?'':'disabled'}><span class="ic">${it.icon}</span><b>${it.name} <kbd>${i+2}</kbd></b><small>${it.desc}${extra} ${left>0?`${left} left`:''}</small><em>${status}</em></button>`}).join('');
   $('boostGrid').querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>useItem(b.dataset.item));
 }
 function openBoost(){if(G.mode!=='play')return;closeDrawer();renderBoost();$('boostSheet').hidden=false}
 function closeBoost(){$('boostSheet').hidden=true}
 function useItem(id){
   const it=ITEMS[id];if(!it||!itemsAvail().includes(id))return;
-  if(!canUse(id)){if(G.score<it.cost)toast(`Need ${it.cost} pts`,'bad');return}
+  if(!canUse(id)){if(usesLeft(id)<=0)toast('Used up','bad');else if(cdLeft())toast(`Wait ${cdLeft()} s`,'bad');else if(G.score<it.cost)toast(`Need ${it.cost} pts`,'bad');return}
   closeBoost();
   if(!G.mp){
-    G.score-=it.cost;
+    G.score-=it.cost;G.uses[id]=(G.uses[id]||0)+1;G.cdUntil=performance.now()+BOOST_CD;
     if(id==='turbo'){G.turboUntil=performance.now()+10000;banner({icon:'🚀',who:'Turbo!',what:'Hold on tight',det:'60% faster for 10 seconds',col:'#ffb23f'});say('L','Turbo! Hold on to something.',true)}
     if(id==='fuel'){G.fuel=Math.min(100,G.fuel+40);banner({icon:'⛽',who:'Refuelled',what:'+40 fuel',col:'#3fd17f'});say('L','Tank topped up. Danke!',true)}
     SFX.go();updateHUD();return;
@@ -1210,6 +1219,8 @@ function showFx(m){
   const it=ITEMS[m.item];if(!it)return;
   const byCol=TEAMS[m.byCar].col,tName=m.target?TEAMS[m.target].name:'';
   const mine=m.byCar===NET.myCar,hitMe=m.target===NET.myCar;
+  if(mine)G.cdUntil=performance.now()+BOOST_CD;
+  if(it.rival&&m.target&&!m.blocked){NET.immune=NET.immune||{};NET.immune[m.target]=performance.now()+PRANK_IMMUNE}
   if(m.blocked){banner({icon:'🛡️',who:`Team ${tName}`,what:'Blocked it!',det:`${m.by}'s ${it.name.toLowerCase()} bounced off the shield.`,col:TEAMS[m.target].col});SFX.team();return}
   if(it.rival){
     const verb=m.item==='oil'?'oiled':'fogged';
