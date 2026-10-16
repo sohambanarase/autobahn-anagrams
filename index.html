@@ -249,6 +249,59 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
 .countdown{position:absolute;inset:0;display:grid;place-items:center;z-index:5;pointer-events:none;font:800 clamp(80px,22vw,140px)/1 var(--f-disp);color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.6);animation:cd .9s ease-out forwards}
 @keyframes cd{from{transform:scale(1.4);opacity:0}30%{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.9)}}
 @media (max-width:440px){.odo{display:none}}
+/* trip length + guest setup */
+.lenpick{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.lenpick button{min-height:52px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:700 16px/1 var(--f-disp)}
+.lenpick button small{font:500 11px var(--f-body);color:var(--muted)}
+.lenpick button[aria-pressed="true"]{background:var(--sign);border-color:#5b95ec}
+.lenpick button[aria-pressed="true"] small{color:#d8e6ff}
+.setupcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.setupcard p{margin:0;font-size:14px;color:var(--muted)}
+.setupcard p b{color:var(--ink)}
+.setchips{display:flex;gap:6px;flex-wrap:wrap}
+.setchips span{font:700 14px var(--f-disp);letter-spacing:.06em;text-transform:uppercase;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px 9px}
+.lastres{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.lastres h3{margin:0;font:800 18px var(--f-disp)}
+/* boosts */
+.boostbtn{position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:12px;z-index:3;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd166,#f29e0c);color:#1a1205;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 13px/1 var(--f-disp);letter-spacing:.06em;text-transform:uppercase}
+.boostbtn .bi{font-size:24px;line-height:1}
+.boostbtn b{position:absolute;top:-6px;right:-6px;min-width:24px;height:24px;border-radius:12px;background:var(--bad);color:#fff;font:800 14px/24px var(--f-disp);text-align:center;padding:0 5px;border:2px solid #fff}
+.boostbtn.ready{animation:pulse 1.4s ease-in-out infinite}
+.boostbtn.dim{filter:grayscale(.8) brightness(.7)}
+@keyframes pulse{50%{transform:scale(1.08);box-shadow:0 0 0 8px rgba(255,178,63,.25),0 6px 18px rgba(0,0,0,.5)}}
+#boostSheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:#12161b;border-top:1px solid var(--line);border-radius:16px 16px 0 0;padding-top:14px;padding-bottom:max(14px,env(safe-area-inset-bottom,0px));padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+#boostSheet .head{max-width:720px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;gap:10px;font:700 20px/1.15 var(--f-disp)}
+#boostSheet .head small{display:block}
+#boostSheet .head small{font:500 13px var(--f-body);color:var(--muted)}
+#boostGrid{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.item{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;row-gap:2px;align-items:center;text-align:left;min-height:72px;padding:10px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line)}
+.item .ic{grid-row:1/3;font-size:30px}
+.item b{font:800 18px/1.1 var(--f-disp)}
+.item small{font-size:12px;line-height:1.3;color:var(--muted)}
+.item em{font-style:normal;font:800 14px var(--f-disp);color:var(--amber);grid-column:2}
+.item kbd{margin-left:4px}
+.item[disabled]{opacity:.4}
+.item.rival{border-color:#5a2c2c;background:#211618}
+/* big who-did-what banner */
+#banner{position:absolute;left:0;right:0;top:9%;z-index:40;display:flex;justify-content:center;pointer-events:none;padding-inline:16px}
+#banner .bn{text-align:center;animation:bnIn 2.6s cubic-bezier(.2,.9,.2,1) forwards;background:rgba(8,10,14,.82);border:3px solid var(--team,#fff);border-radius:18px;padding:16px 22px;box-shadow:0 20px 60px rgba(0,0,0,.6);max-width:520px}
+#banner .who{display:block;font:800 clamp(38px,11vw,72px)/.95 var(--f-disp);color:var(--team,#fff);text-transform:uppercase;letter-spacing:.01em}
+#banner .what{display:block;margin-top:6px;font:800 clamp(24px,7vw,40px)/1 var(--f-disp);color:#fff;text-transform:uppercase}
+#banner .det{display:block;margin-top:8px;font-size:15px;color:#cfd6df}
+#banner .ico{display:block;font-size:46px;line-height:1;margin-bottom:6px}
+@keyframes bnIn{0%{transform:scale(.4) rotate(-6deg);opacity:0}10%{transform:scale(1.08) rotate(1deg);opacity:1}16%{transform:scale(1) rotate(0)}85%{opacity:1}100%{opacity:0;transform:scale(.96)}}
+#shield.spin #road{animation:spin 1.3s cubic-bezier(.3,.1,.3,1)}
+@keyframes spin{0%{transform:rotate(0) scale(1)}15%{transform:rotate(-25deg) scale(1.35)}70%{transform:rotate(680deg) scale(1.35)}100%{transform:rotate(720deg) scale(1)}}
+.locked .tile,.locked .chosen{animation:wobble .4s infinite;filter:grayscale(1) brightness(.7)}
+@keyframes wobble{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.fogged #tiles,.fogged #slots,.fogged #plate{filter:blur(5px) saturate(.4);transition:filter .3s}
+#fogLayer{position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(ellipse at 50% 60%,rgba(220,225,230,.55),rgba(200,205,212,.85));opacity:0;transition:opacity .6s}
+#fogLayer.on{opacity:1}
+.plate.gold{background:linear-gradient(135deg,#ffe48a,#f2b51e 55%,#ffe9a8)}
+.chip.gold{background:linear-gradient(90deg,#ffe48a,#f2b51e);color:#1a1205}
+#bubble{max-width:min(calc(100% - 110px),420px)}
+@media (max-height:700px){.boostbtn{width:56px;height:56px}.boostbtn .bi{font-size:20px}}
+
 @media (max-height:700px){
   .tile{width:44px;height:46px;font-size:26px}
   .act{height:46px}
@@ -282,7 +335,9 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
     <div id="board" hidden></div>
     <div id="leg">Bavarian Meadows</div>
     <div id="bubble"><div class="av L" id="bAv">L</div><div><div class="bname" id="bName">Lukas · driving</div><div class="btext" id="bText"></div></div></div>
+    <div id="fogLayer"></div>
     <div id="fx"></div>
+    <button class="boostbtn dim" id="btnBoost" aria-label="Boosts and pranks"><span class="bi">⚡</span>Boost<b id="boostBadge" hidden></b></button>
   </section>
 
   <section id="cluster" aria-label="Instrument cluster">
@@ -327,7 +382,7 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
         <button class="act" id="aHorn" aria-label="Honk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4h3l7 5V5L6 10z"/><path d="M17 9l3-2M17 15l3 2M18 12h3"/></svg>Honk</button>
         <button class="act go" id="aGo">Submit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </div>
-      <div class="kbhint"><span><kbd>A–Z</kbd> type</span><span><kbd>⌫</kbd> remove</span><span><kbd>Enter</kbd> submit</span><span><kbd>Space</kbd> honk</span><span><kbd>1</kbd> shuffle</span><span><kbd>Esc</kbd> pause</span></div>
+      <div class="kbhint"><span><kbd>A–Z</kbd> type</span><span><kbd>⌫</kbd> remove</span><span><kbd>Enter</kbd> submit</span><span><kbd>Space</kbd> honk</span><span><kbd>1</kbd> shuffle</span><span><kbd>2–6</kbd> boosts</span><span><kbd>Esc</kbd> pause</span></div>
     </div>
   </section>
 
@@ -335,6 +390,12 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
     <div class="head"><span>Borrow a letter <small>· one per plate, −30%</small></span><button class="ghost-btn" id="drClose" style="height:40px;padding:0 14px;font-size:15px">Close</button></div>
     <div id="abc"></div>
   </div>
+
+  <div id="boostSheet" hidden>
+    <div class="head"><span>Boosts &amp; pranks <small id="walletTxt"></small></span><button class="ghost-btn" id="bsClose" style="height:40px;padding:0 14px;font-size:15px">Close</button></div>
+    <div id="boostGrid"></div>
+  </div>
+  <div id="banner"></div>
 
   <div class="ov" id="ovStart">
     <div class="card">
@@ -347,6 +408,12 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
       <div class="modes">
         <button class="mode primary" id="btnSolo"><div><b>Solo Cruise</b><small>München → Berlin with Lukas &amp; Mia</small></div></button>
         <button class="mode" id="btnRoadTrip"><div><b>Road Trip</b><small>Friends on their own phones. Team up or race other cars.</small></div><span class="tag">Online</span></button>
+      </div>
+      <div class="field"><span class="lblsm">Trip length</span>
+        <div class="lenpick" id="lenPick">
+          <button data-len="quick">Quick<small>about 3 min</small></button>
+          <button data-len="normal">Normal<small>about 7 min</small></button>
+        </div>
       </div>
       <div class="field"><span class="lblsm">Your seat for solo</span>
         <div class="seatpick" id="seatPick">
@@ -365,6 +432,8 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
         <div class="leet"><span>0 <i>O</i></span><span>1 <i>I</i></span><span>3 <i>E</i></span><span>4 <i>A</i></span><span>5 <i>S</i></span><span>7 <i>T</i></span><span>8 <i>B</i></span></div>
         <ul style="margin-top:8px">
           <li>Under 5 seconds scores double. Words refill your tank; missed cars drain it.</li>
+          <li>Spend points on <b>⚡ Boosts</b>: turbo, refuel, or oil your friends' car in Rally.</li>
+          <li>Gold plates pay triple.</li>
         </ul>
       </div>
       <div class="row"><span class="best">Best run <b id="bestStart">0</b></span><span class="best">Words: <b id="langStart" style="font-size:15px">English</b></span></div>
@@ -385,19 +454,30 @@ kbd{font-family:var(--f-disp);font-size:10px;border:1px solid var(--line);border
       </div>
       <div id="netLobby" class="card" style="gap:12px" hidden>
         <div class="codecard"><div><i>Trip code</i><b id="lbCode">----</b></div><button class="ghost-btn" id="btnCopy">Copy invite</button></div>
+        <div id="lbLast" class="lastres" hidden></div>
+        <div id="guestSum" class="setupcard" hidden></div>
+        <div id="hostCtl" class="card" style="gap:12px">
         <div class="field"><span class="lblsm">Game type</span>
           <div class="modepick">
             <button id="mdConvoy"><b>Convoy</b><small>Everyone in one car. Shared tank, shared score.</small></button>
             <button id="mdRally"><b>Rally</b><small>Team cars race to Berlin. Most km wins.</small></button>
           </div>
         </div>
-        <div id="lbCars"></div>
-        <button class="ghost-btn" id="btnAddCar">Add a team car</button>
+        <div class="field"><span class="lblsm">Trip length</span>
+          <div class="lenpick" id="lbLen">
+            <button data-len="quick">Quick<small>about 3 min</small></button>
+            <button data-len="normal">Normal<small>about 7 min</small></button>
+          </div>
+        </div>
         <div class="row"><span class="lblsm">Words</span>
           <div class="seg" role="group" aria-label="Trip language" style="backdrop-filter:none">
             <button id="tl-EN" aria-pressed="true">EN</button><button id="tl-DE" aria-pressed="false">DE</button><button id="tl-MIX" aria-pressed="false">EN+DE</button>
           </div>
         </div>
+        </div>
+        <span class="lblsm">Pick your seat</span>
+        <div id="lbCars"></div>
+        <button class="ghost-btn" id="btnAddCar">Add a team car</button>
         <button class="big-btn" id="btnStartTrip">Start the trip</button>
         <p class="netnote" id="lbNote"></p>
         <button class="linkbtn" id="btnLeave">Leave trip</button>
