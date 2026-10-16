@@ -1,0 +1,17 @@
+# build output (single-file version)
+dist/
+
+# Vercel CLI
+.vercel/
+
+# local env files: secrets never go in the repo
+.env
+.env.*
+
+# OS / editor clutter
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+.vscode/
+.idea/
