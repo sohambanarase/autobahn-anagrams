@@ -1,0 +1,23 @@
+# Backup keep-alive: pings Supabase directly every 2 days, independent of Vercel.
+# Reads the URL + publishable key from config.js. You can also run it by hand:
+# GitHub > Actions > Supabase keep-alive > Run workflow.
+name: Supabase keep-alive
+on:
+  schedule:
+    - cron: "23 7 */2 * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ping Supabase
+        run: |
+          URL=$(grep -oP 'supabaseUrl:\s*"\K[^"]+' config.js)
+          KEY=$(grep -oP 'supabaseAnonKey:\s*"\K[^"]+' config.js)
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then echo "config.js has no keys"; exit 1; fi
+          echo "Write (ping):"
+          curl -sS -X POST "$URL/rest/v1/rpc/ping" -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}' -w "\nHTTP %{http_code}\n"
+          echo "Read:"
+          curl -sS "$URL/rest/v1/keepalive?select=id,pinged_at,pings" -H "apikey: $KEY" -w "\nHTTP %{http_code}\n" | tee out.txt
+          grep -q "HTTP 200" out.txt

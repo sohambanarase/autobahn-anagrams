@@ -1,5 +1,8 @@
 {
+  "functions": {
+    "api/keepalive.js": { "includeFiles": "config.js" }
+  },
   "crons": [
-    { "path": "/api/keepalive", "schedule": "0 6 * * *" }
+    { "path": "/api/keepalive", "schedule": "17 6 * * *" }
   ]
 }

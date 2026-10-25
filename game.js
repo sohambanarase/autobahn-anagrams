@@ -914,6 +914,7 @@ function makeTransport(code,onMsg,onStatus){
   if(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase&&window.supabase.createClient){
     try{
       const sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{realtime:{params:{eventsPerSecond:20}}});
+      try{sb.rpc('ping').then(()=>{},()=>{})}catch(e){} // counts as activity so the free project stays awake
       const ch=sb.channel('aa-trip-'+code,{config:{broadcast:{self:false}}});
       ch.on('broadcast',{event:'m'},({payload})=>onMsg(payload));
       ch.subscribe(st=>onStatus(st==='SUBSCRIBED'?'online':(st==='CHANNEL_ERROR'||st==='TIMED_OUT')?'error':'connecting'));

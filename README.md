@@ -135,6 +135,7 @@ game.js               Game, 2D road renderer, multiplayer
 words.js              English + German word lists (~50,000 words)
 config.js             Supabase URL + publishable key
 api/keepalive.js      Daily ping so the free Supabase project never pauses
+.github/workflows/    Backup ping every 2 days from GitHub
 vercel.json           Runs the keep-alive once a day
 supabase-setup.sql    Creates the tiny keep-alive table
 manifest.webmanifest  Makes it installable as an app
@@ -154,7 +155,7 @@ _head.html, build.py  Source of index.html (edit _head.html, then run python3 bu
 
 - **Supabase free:** about 200 people online at once and 2 million live messages a month. A 6-minute trip with 4 players uses roughly 3,000.
 - **Vercel Hobby:** free for personal, non-commercial projects.
-- Supabase pauses free projects after 7 days without use. The daily keep-alive stops that.
+- Supabase pauses free projects after 7 days without use. Three things stop that: a daily Vercel cron (`/api/keepalive`), a GitHub Action every 2 days (`.github/workflows/keepalive.yml`), and every online game. Each one calls `ping()`, which writes a timestamp to the database.
 
 ## Troubleshooting
 
